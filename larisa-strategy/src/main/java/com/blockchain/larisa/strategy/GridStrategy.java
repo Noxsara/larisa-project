@@ -31,10 +31,6 @@ public class GridStrategy extends AbstractStategy {
 
     private TradePairEnum tradePair;
 
-    private BigDecimal minPositionRate;
-
-    private BigDecimal maxPositionRate;
-
     private BigDecimal waveUpperPrice;
 
     private BigDecimal waveLowerPrice;
@@ -66,8 +62,6 @@ public class GridStrategy extends AbstractStategy {
         GridConfig gridConfig = (GridConfig) config;
 
         tradePair = TradePairEnum.getByPairName(gridConfig.getTradePair());
-        minPositionRate = gridConfig.getMinPositionRate();
-        maxPositionRate = gridConfig.getMaxPositionRate();
 
         waveLowerPrice = gridConfig.getWaveLowerPrice();
         waveUpperPrice = gridConfig.getWaveUpperPrice();
@@ -82,8 +76,8 @@ public class GridStrategy extends AbstractStategy {
 
     @Override
     protected void doResume() {
-        LOGGER.info("准备启动网格策略, 交易对:{}, 持仓范围:{}, 网格区间:{}, 网格数:{}",
-                tradePair.getPairName(), "[" + minPositionRate + "~" + maxPositionRate + "]", "[" + waveLowerPrice + "~" + waveUpperPrice + "]", area);
+        LOGGER.info("准备启动网格策略, 交易对:{}, 网格区间:{}, 网格数:{}",
+                tradePair.getPairName(), "[" + waveLowerPrice + "~" + waveUpperPrice + "]", area);
 
         //获取现货账户
         LOGGER.info("获取现货账户信息...");
@@ -166,10 +160,7 @@ public class GridStrategy extends AbstractStategy {
                 lastDealPrice = depth.getOneBuyPrice();
                 lastDirection = 1;
             }
-            return;
         }
-
-        LOGGER.info("到这里来了...");
 
     }
 
