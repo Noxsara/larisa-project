@@ -99,12 +99,13 @@ public class GridStrategy extends AbstractStategy {
 
         //最近成交网格设置为当前网格
         SpotSingleDepth depth = depth();
-        gridContext.update(depth);
-        LOGGER.info("当前网格:{}", gridContext.getLastGrid());
+        Grid grid = gridContext.getGridByDepth(depth, TrendEnum.FALL);
+        LOGGER.info("初始深度:{}, 初始网格:{}", depth, grid);
+
 
         //最近一次成交价格设置为启动时卖一价
         lastDealPrice = depth.getOneSellPrice();
-        lastGridIndex = gridContext.getLastGrid().getIndex();
+        lastGridIndex = grid.getIndex();
     }
 
     @Override
@@ -116,6 +117,7 @@ public class GridStrategy extends AbstractStategy {
             Grid grid = gridContext.getGridByDepth(depth, TrendEnum.FALL);
             if (grid == null) {
                 LOGGER.info("网格跌穿...");
+//                mailService.send(null, "交易对【" + name() + "】跌穿网格", "跌穿网格");
                 return;
             }
             if (grid.getIndex() < lastGridIndex) {
@@ -128,6 +130,7 @@ public class GridStrategy extends AbstractStategy {
                     DateUtil.sleep(1000);
                     SpotOrderDetail orderDetail = huobiSpotService.orderInfo(orderId);
                     LOGGER.info("订单id:{}, 订单详情:{}", orderId, orderDetail);
+                    mailService.send(null, "交易对【" + name() + "】买入", "买入");
 
                 }
                 lastGridIndex = grid.getIndex();
@@ -143,6 +146,7 @@ public class GridStrategy extends AbstractStategy {
             Grid grid = gridContext.getGridByDepth(depth, TrendEnum.RISE);
             if (grid == null) {
                 LOGGER.info("网格涨穿...");
+//                mailService.send(null, "交易对【" + name() + "】涨穿网格", "涨穿网格");
                 return;
             }
             if (grid.getIndex() > lastGridIndex) {
@@ -155,6 +159,7 @@ public class GridStrategy extends AbstractStategy {
                     DateUtil.sleep(1000);
                     SpotOrderDetail orderDetail = huobiSpotService.orderInfo(orderId);
                     LOGGER.info("订单id:{}, 订单详情:{}", orderId, orderDetail);
+                    mailService.send(null, "交易对【" + name() + "】卖出", "卖出");
 
                 }
                 lastGridIndex = grid.getIndex();
@@ -178,7 +183,7 @@ public class GridStrategy extends AbstractStategy {
 
     @Override
     protected void doClear() {
-
+        //do nothing
     }
 
     @Override
