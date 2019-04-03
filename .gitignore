@@ -21,7 +21,6 @@ classes
 
 *private.properties
 *db.properties
-*todo.txt
 *admin.html
 *ViewController.java
 *TokenFilter.java
