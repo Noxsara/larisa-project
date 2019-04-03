@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="INFO">
+
+    <properties>
+        <property name="log_pattern">
+            %d{yyyy-MM-dd HH:mm:ss} [%t] [%c{1}.%M()] %-5level - %msg%xEx%n
+        </property>
+        <property name="larisa_info_log_file">larisa_info.log</property>
+        <property name="larisa_error_log_file">larisa_error.log</property>
+        <property name="singlekline_info_log_file_EOS_CQ">singlekline_info_EOS_CQ.log</property>
+        <property name="singlekline_error_log_file_EOS_CQ">singlekline_error_EOS_CQ.log</property>
+        <property name="singlekline_info_log_file_ETH_CQ">singlekline_info_ETH_CQ.log</property>
+        <property name="singlekline_error_log_file_ETH_CQ">singlekline_error_ETH_CQ.log</property>
+    </properties>
+
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${log_pattern}" />
+        </Console>
+
+
+        <File name="LarisaInfo" filename="logs/${larisa_info_log_file}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Filters>
+                <ThresholdFilter level = "INFO" onMatch ="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </File>
+
+        <File name="LarisaError" filename="logs/${larisa_error_log_file}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Filters>
+                <ThresholdFilter level = "ERROR" onMatch ="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </File>
+
+        <!--<File name="SingKlineInfo_EOS_CQ" filename="logs/${singlekline_info_log_file_EOS_CQ}">-->
+            <!--<PatternLayout pattern="${log_pattern}" />-->
+            <!--<Filters>-->
+                <!--<ThresholdFilter level = "INFO" onMatch ="ACCEPT" onMismatch="DENY"/>-->
+            <!--</Filters>-->
+        <!--</File>-->
+        <RollingFile name="SingKlineInfo_EOS_CQ" filename="logs/${singlekline_info_log_file_EOS_CQ}" filePattern="logs/${singlekline_info_log_file_EOS_CQ}-%d{yyyy-MM-dd}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Filters>
+                <ThresholdFilter level = "INFO" onMatch ="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <!--<SizeBasedTriggeringPolicy size="400 MB" />-->
+            <DefaultRolloverStrategy max="7"/>
+        </RollingFile>
+
+        <File name="SingleKlineError_EOS_CQ" filename="logs/${singlekline_error_log_file_EOS_CQ}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Filters>
+                <ThresholdFilter level = "ERROR" onMatch ="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </File>
+
+        <RollingFile name="SingKlineInfo_ETH_CQ" filename="logs/${singlekline_info_log_file_ETH_CQ}" filePattern="logs/${singlekline_info_log_file_ETH_CQ}-%d{yyyy-MM-dd}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Filters>
+                <ThresholdFilter level = "INFO" onMatch ="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <!--<SizeBasedTriggeringPolicy size="400 MB" />-->
+            <DefaultRolloverStrategy max="7"/>
+        </RollingFile>
+
+        <File name="SingleKlineError_ETH_CQ" filename="logs/${singlekline_error_log_file_ETH_CQ}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Filters>
+                <ThresholdFilter level = "ERROR" onMatch ="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </File>
+
+    </appenders>
+
+
+
+    <loggers>
+
+        <!--15分均线日志 EOS_CQ-->
+        <logger name = "SingleKLineStrategy_EOS_CQ" level = "INFO" additivity = "true">
+            <appender-ref ref = "SingKlineInfo_EOS_CQ"/>
+            <appender-ref ref = "SingleKlineError_EOS_CQ"/>
+        </logger>
+
+        <!--15分均线日志 ETH_CQ-->
+        <logger name = "SingleKLineStrategy_ETH_CQ" level = "INFO" additivity = "true">
+            <appender-ref ref = "SingKlineInfo_ETH_CQ"/>
+            <appender-ref ref = "SingleKlineError_ETH_CQ"/>
+        </logger>
+
+        <!--系统日子-->
+        <logger name = "com.blockchain.larisa" level = "INFO" additivity = "true">
+            <appender-ref ref = "LarisaInfo"/>
+            <appender-ref ref = "LarisaError"/>
+        </logger>
+
+        <Root level="INFO">
+            <AppenderRef ref="Console" />
+        </Root>
+    </loggers>
+</configuration>

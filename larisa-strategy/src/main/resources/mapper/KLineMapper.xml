@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blockchain.larisa.mapper.KLineMapper">
+
+    <resultMap id="BaseResultMap" type="com.blockchain.larisa.domain.KLine">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="open" jdbcType="DECIMAL" property="open"/>
+        <result column="close" jdbcType="DECIMAL" property="close"/>
+        <result column="high" jdbcType="DECIMAL" property="high"/>
+        <result column="low" jdbcType="DECIMAL" property="low"/>
+        <result column="count" jdbcType="BIGINT" property="count"/>
+        <result column="vol" jdbcType="DOUBLE" property="vol"/>
+        <result column="amount" jdbcType="BIGINT" property="amount"/>
+    </resultMap>
+
+    <sql id="BaseColumn">
+        id, open, close, high, low, count, vol, amount
+    </sql>
+
+    <insert id="insert" parameterType="com.blockchain.larisa.domain.KLine">
+        INSERT INTO
+        kline (<include refid="BaseColumn"/>)
+        VALUES (
+        #{id, jdbcType=BIGINT},
+        #{open, jdbcType=DECIMAL},
+        #{close, jdbcType=DECIMAL},
+        #{high, jdbcType=DECIMAL},
+        #{low, jdbcType=DECIMAL},
+        #{count, jdbcType=BIGINT},
+        #{vol, jdbcType=DOUBLE},
+        #{amount, jdbcType=BIGINT}
+        )
+    </insert>
+
+</mapper>

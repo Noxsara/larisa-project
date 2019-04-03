@@ -1,0 +1,27 @@
+# Created by .ignore support plugin (hsz.mobi)
+logs
+out
+*.iml
+.project
+.classpath
+.settings
+*/target
+*/.settings
+*/.classpath
+*/.project
+*/*.iml
+.idea
+target
+*/build
+src/main/webapp/WEB-INF/classes
+.idea/inspectionProfiles/
+.idea/workspace.xml
+.DS_Store
+classes
+
+*private.properties
+*db.properties
+*todo.txt
+*admin.html
+*ViewController.java
+*TokenFilter.java
