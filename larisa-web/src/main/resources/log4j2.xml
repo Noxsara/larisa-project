@@ -11,6 +11,10 @@
         <property name="singlekline_error_log_file_EOS_CQ">singlekline_error_EOS_CQ.log</property>
         <property name="singlekline_info_log_file_ETH_CQ">singlekline_info_ETH_CQ.log</property>
         <property name="singlekline_error_log_file_ETH_CQ">singlekline_error_ETH_CQ.log</property>
+        <property name="grid_info_log_file_EOSUSDT">grid_info_EOSUSDT.log</property>
+        <property name="grid_error_log_file_EOSUSDT">grid_error_EOSUSDT.log</property>
+        <property name="grid_info_log_file_ETHUSDT">grid_info_ETHUSDT.log</property>
+        <property name="grid_error_log_file_ETHUSDT">grid_error_ETHUSDT.log</property>
     </properties>
 
     <appenders>
@@ -73,6 +77,42 @@
             </Filters>
         </File>
 
+
+        <!--网格日志-->
+        <RollingFile name="GridStrategyInfo_EOSUSDT" filename="logs/${grid_info_log_file_EOSUSDT}" filePattern="logs/${grid_info_log_file_EOSUSDT}-%d{yyyy-MM-dd}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Filters>
+                <ThresholdFilter level = "INFO" onMatch ="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <!--<SizeBasedTriggeringPolicy size="400 MB" />-->
+            <DefaultRolloverStrategy max="7"/>
+        </RollingFile>
+
+        <File name="GridStrategyError_EOSUSDT" filename="logs/${grid_error_log_file_EOSUSDT}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Filters>
+                <ThresholdFilter level = "ERROR" onMatch ="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </File>
+
+        <RollingFile name="GridStrategyInfo_ETHUSDT" filename="logs/${grid_info_log_file_ETHUSDT}" filePattern="logs/${grid_info_log_file_ETHUSDT}-%d{yyyy-MM-dd}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Filters>
+                <ThresholdFilter level = "INFO" onMatch ="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <!--<SizeBasedTriggeringPolicy size="400 MB" />-->
+            <DefaultRolloverStrategy max="7"/>
+        </RollingFile>
+
+        <File name="GridStrategyError_ETHUSDT" filename="logs/${grid_error_log_file_ETHUSDT}">
+            <PatternLayout pattern="${log_pattern}" />
+            <Filters>
+                <ThresholdFilter level = "ERROR" onMatch ="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </File>
+
     </appenders>
 
 
@@ -89,6 +129,17 @@
         <logger name = "SingleKLineStrategy_ETH_CQ" level = "INFO" additivity = "true">
             <appender-ref ref = "SingKlineInfo_ETH_CQ"/>
             <appender-ref ref = "SingleKlineError_ETH_CQ"/>
+        </logger>
+
+        <!--网格日志 EOSUSDT-->
+        <logger name = "GridStrategy_EOSUSDT" level = "INFO" additivity = "true">
+            <appender-ref ref = "GridStrategyInfo_EOSUSDT"/>
+            <appender-ref ref = "GridStrategyError_EOSUSDT"/>
+        </logger>
+
+        <logger name = "GridStrategy_ETHUSDT" level = "INFO" additivity = "true">
+            <appender-ref ref = "GridStrategyInfo_ETHUSDT"/>
+            <appender-ref ref = "GridStrategyError_ETHUSDT"/>
         </logger>
 
         <!--系统日子-->

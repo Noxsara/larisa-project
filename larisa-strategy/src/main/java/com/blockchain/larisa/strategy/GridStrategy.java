@@ -13,7 +13,6 @@ import com.blockchain.larisa.huobi.spot.request.CreateOrderRequest;
 import com.blockchain.larisa.service.HuobiSpotService;
 import com.blockchain.larisa.service.MailService;
 import com.blockchain.larisa.util.DateUtil;
-import com.sun.org.apache.bcel.internal.generic.LOOKUPSWITCH;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ import java.math.RoundingMode;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class GridStrategy extends AbstractStategy {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(GridStrategy.class);
+    private Logger LOGGER;
 
     private TradePairEnum tradePair;
 
@@ -77,7 +76,8 @@ public class GridStrategy extends AbstractStategy {
 
         gridMoney = gridConfig.getGridMoney();
 
-        //Logger放到这里初始化
+        LOGGER = LoggerFactory.getLogger(this.getClass().getSimpleName() + "_" + name());
+
     }
 
     @Override

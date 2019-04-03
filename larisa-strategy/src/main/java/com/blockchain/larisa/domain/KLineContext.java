@@ -103,10 +103,13 @@ public class KLineContext {
      * @return void
      */
     public boolean isBuy() {
-        LOGGER.info("当前收盘:{}, 历史平均收盘:{}, 当前最高:{}, 历史最高:{}, 历史最高收盘:{}, 最高平均:{}",
-                currentKline.getClose(), getHistoryCloseAverage(), currentKline.getHigh(), getHistoryMaxHigh(), getHistoryMaxClose(), (getHistoryMaxClose().add(getHistoryMaxHigh())).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP));
         return currentKline.getClose().compareTo(getHistoryCloseAverage()) >= 0
                 && currentKline.getHigh().compareTo(getHistoryMaxHigh()) >= 0;
+    }
+
+    public String getBuyStatus() {
+        return String.format("当前收盘:%s, 历史平均收盘:%s, 当前最高:%s, 历史最高:%s, 历史最高收盘:%s, 最高平均:%s",
+                currentKline.getClose(), getHistoryCloseAverage(), currentKline.getHigh(), getHistoryMaxHigh(), getHistoryMaxClose(), (getHistoryMaxClose().add(getHistoryMaxHigh())).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP));
     }
 
     /**
@@ -115,10 +118,13 @@ public class KLineContext {
      * @return void
      */
     public boolean isSell() {
-        LOGGER.info("当前收盘:{}, 历史平均收盘:{}, 当前最低:{}, 历史最低:{}, 历史最低收盘价:{}, 最低平均值:{}",
-                currentKline.getClose(), getHistoryCloseAverage(), currentKline.getLow(), getHistoryMinLow(), getHistoryMinClose(), (getHistoryMinClose().add(getHistoryMinLow())).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP));
         return currentKline.getClose().compareTo(getHistoryCloseAverage()) <= 0
                 && currentKline.getLow().compareTo(getHistoryMinLow()) <= 0;
+    }
+
+    public String getSellStatus() {
+        return String.format("当前收盘:%s, 历史平均收盘:%s, 当前最低:%s, 历史最低:%s, 历史最低收盘价:%s, 最低平均值:%s",
+                currentKline.getClose(), getHistoryCloseAverage(), currentKline.getLow(), getHistoryMinLow(), getHistoryMinClose(), (getHistoryMinClose().add(getHistoryMinLow())).divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP));
     }
 
 

@@ -162,6 +162,7 @@ public class SingleKLineStrategy extends AbstractStategy {
         BigDecimal oneSellPrice = depthResponse.getTick().getAsks().get(0).getPrice();
 
         //3.开多。如果已有空单, 则平掉空单
+        LOGGER.info(kLineContext.getBuyStatus());
         if (!hasBuy && kLineContext.isBuy()) {
             /**
              * a. 上次出入场是同一根k线，并且还处于上次离场k线, 那再次入场必须突破当前k线最高价.
@@ -186,6 +187,7 @@ public class SingleKLineStrategy extends AbstractStategy {
         }
 
         //4.开空。如果已有多单, 则平掉多单
+        LOGGER.info(kLineContext.getSellStatus());
         if (!hasSell && kLineContext.isSell()) {
             /**
              * a. 上次出入场是同一根k线，并且还处于上次离场k线, 那再次入场必须突破当前k线最低价.
