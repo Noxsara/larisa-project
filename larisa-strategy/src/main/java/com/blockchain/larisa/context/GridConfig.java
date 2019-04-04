@@ -8,10 +8,6 @@ public class GridConfig implements StrategyConfig {
 
     private String tradePair;
 
-    private BigDecimal minPositionRate;
-
-    private BigDecimal maxPositionRate;
-
     private BigDecimal waveUpperPrice;
 
     private BigDecimal waveLowerPrice;
@@ -30,22 +26,6 @@ public class GridConfig implements StrategyConfig {
 
     public void setTradePair(String tradePair) {
         this.tradePair = tradePair;
-    }
-
-    public BigDecimal getMinPositionRate() {
-        return minPositionRate;
-    }
-
-    public void setMinPositionRate(BigDecimal minPositionRate) {
-        this.minPositionRate = minPositionRate;
-    }
-
-    public BigDecimal getMaxPositionRate() {
-        return maxPositionRate;
-    }
-
-    public void setMaxPositionRate(BigDecimal maxPositionRate) {
-        this.maxPositionRate = maxPositionRate;
     }
 
     public BigDecimal getWaveUpperPrice() {
