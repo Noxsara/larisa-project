@@ -194,7 +194,7 @@ public class SingleKLineStrategy extends AbstractStategy {
 
         //4.开空。如果已有多单, 则平掉多单
         LOGGER.info(kLineContext.getSellStatus());
-        if (!hasSell && kLineContext.isSell() && !hasBuy) {
+        if (!hasSell && kLineContext.isSell()) {
             //如果有多单, 表示反向开空, 先平掉多单
             if (hasBuy) {
                 LOGGER.info("当前持有买单, 达到开空条件...");
@@ -312,27 +312,28 @@ public class SingleKLineStrategy extends AbstractStategy {
             int profitLevel = -2;
             BigDecimal maxHigh = kLineContext.getMaxHigh();
 
-            //0.如果有追单的情况，出场价设置为入场价
-            if (continues) {
-                leavePrice = openPrice;
+//            //0.如果有追单的情况，出场价设置为入场价
+//            if (continues) {
+//                leavePrice = openPrice;
+//            } else {
+//
+//            }
+            //1.超过highRate的盈利, 回撤highLeaveRate即止盈出场。保证大单有足够多的收益
+            if (maxHigh.compareTo(openPrice.multiply(BigDecimal.ONE.add(profitRate.getHighRate2()))) >= 0) {
+                leavePrice = maxHigh.multiply(BigDecimal.ONE.subtract(profitRate.getHighLeaveRate2()));
+                profitLevel = 2;
+            } else if (maxHigh.compareTo(openPrice.multiply(BigDecimal.ONE.add(profitRate.getHighRate1()))) >= 0) {
+                leavePrice = maxHigh.multiply(BigDecimal.ONE.subtract(profitRate.getHighLeaveRate1()));
+                profitLevel = 1;
+            } else if (maxHigh.compareTo(openPrice.multiply(BigDecimal.ONE.add(profitRate.getHighRate0()))) >= 0) {
+                leavePrice = maxHigh.multiply(BigDecimal.ONE.subtract(profitRate.getHighLeaveRate0()));
+                profitLevel = 0;
             } else {
-                //1.超过highRate的盈利, 回撤highLeaveRate即止盈出场。保证大单有足够多的收益
-                if (maxHigh.compareTo(openPrice.multiply(BigDecimal.ONE.add(profitRate.getHighRate2()))) >= 0) {
-                    leavePrice = maxHigh.multiply(BigDecimal.ONE.subtract(profitRate.getHighLeaveRate2()));
-                    profitLevel = 2;
-                } else if (maxHigh.compareTo(openPrice.multiply(BigDecimal.ONE.add(profitRate.getHighRate1()))) >= 0) {
-                    leavePrice = maxHigh.multiply(BigDecimal.ONE.subtract(profitRate.getHighLeaveRate1()));
-                    profitLevel = 1;
-                } else if (maxHigh.compareTo(openPrice.multiply(BigDecimal.ONE.add(profitRate.getHighRate0()))) >= 0) {
-                    leavePrice = maxHigh.multiply(BigDecimal.ONE.subtract(profitRate.getHighLeaveRate0()));
-                    profitLevel = 0;
-                } else {
-                    //2.未超过highRate的盈利, 使用移动止损
-                    leavePrice = (openPrice.multiply(BigDecimal.valueOf(0.4))
-                            .add(kLineContext.getMaxHigh().multiply(BigDecimal.valueOf(0.6))))
-                            .multiply(BigDecimal.ONE.subtract(riskRate));
-                    profitLevel = -1;
-                }
+                //2.未超过highRate的盈利, 使用移动止损
+                leavePrice = (openPrice.multiply(BigDecimal.valueOf(0.4))
+                        .add(kLineContext.getMaxHigh().multiply(BigDecimal.valueOf(0.6))))
+                        .multiply(BigDecimal.ONE.subtract(riskRate));
+                profitLevel = -1;
             }
 
 
@@ -407,26 +408,28 @@ public class SingleKLineStrategy extends AbstractStategy {
             int profitLevel = -2;
             BigDecimal minLow = kLineContext.getMinLow();
 
-            //0.如果有追单的情况，出场价设置为入场价
-            if (continues) {
-                leavePrice = openPrice;
+//            //0.如果有追单的情况，出场价设置为入场价
+//            if (continues) {
+//                leavePrice = openPrice;
+//            } else {
+//
+//            }
+
+            //1.超过highRate的盈利, 回撤highLeaveRate即止盈出场。保证大单有足够多的收益
+            if (minLow.compareTo(openPrice.multiply(BigDecimal.ONE.subtract(profitRate.getHighRate2()))) <= 0) {
+                leavePrice = minLow.multiply(BigDecimal.ONE.add(profitRate.getHighLeaveRate2()));
+                profitLevel = 2;
+            } else if (minLow.compareTo(openPrice.multiply(BigDecimal.ONE.subtract(profitRate.getHighRate1()))) <= 0) {
+                leavePrice = minLow.multiply(BigDecimal.ONE.add(profitRate.getHighLeaveRate1()));
+                profitLevel = 1;
+            } else if (minLow.compareTo(openPrice.multiply(BigDecimal.ONE.subtract(profitRate.getHighRate0()))) <= 0) {
+                leavePrice = minLow.multiply(BigDecimal.ONE.add(profitRate.getHighLeaveRate0()));
+                profitLevel = 0;
             } else {
-                //1.超过highRate的盈利, 回撤highLeaveRate即止盈出场。保证大单有足够多的收益
-                if (minLow.compareTo(openPrice.multiply(BigDecimal.ONE.subtract(profitRate.getHighRate2()))) <= 0) {
-                    leavePrice = minLow.multiply(BigDecimal.ONE.add(profitRate.getHighLeaveRate2()));
-                    profitLevel = 2;
-                } else if (minLow.compareTo(openPrice.multiply(BigDecimal.ONE.subtract(profitRate.getHighRate1()))) <= 0) {
-                    leavePrice = minLow.multiply(BigDecimal.ONE.add(profitRate.getHighLeaveRate1()));
-                    profitLevel = 1;
-                } else if (minLow.compareTo(openPrice.multiply(BigDecimal.ONE.subtract(profitRate.getHighRate0()))) <= 0) {
-                    leavePrice = minLow.multiply(BigDecimal.ONE.add(profitRate.getHighLeaveRate0()));
-                    profitLevel = 0;
-                } else {
-                    //2.未超过highRate的盈利, 使用移动止损
-                    leavePrice = (openPrice.multiply(BigDecimal.valueOf(0.4))
-                            .add(kLineContext.getMinLow().multiply(BigDecimal.valueOf(0.6))))
-                            .multiply(BigDecimal.ONE.add(riskRate));
-                }
+                //2.未超过highRate的盈利, 使用移动止损
+                leavePrice = (openPrice.multiply(BigDecimal.valueOf(0.4))
+                        .add(kLineContext.getMinLow().multiply(BigDecimal.valueOf(0.6))))
+                        .multiply(BigDecimal.ONE.add(riskRate));
             }
 
             LOGGER.info("当前卖1价:{}, 历史最低价:{}, 预期出场价:{}, 预计收益级别:{}", oneSellPrice, minLow, leavePrice, profitLevel);
