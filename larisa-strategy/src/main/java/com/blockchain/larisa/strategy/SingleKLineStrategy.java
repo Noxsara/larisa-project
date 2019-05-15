@@ -161,62 +161,71 @@ public class SingleKLineStrategy extends AbstractStategy {
         if (depthResponse == null) {
             return;
         }
-        BigDecimal oneBuyPrice  = depthResponse.getTick().getBids().get(0).getPrice();
+        BigDecimal oneBuyPrice = depthResponse.getTick().getBids().get(0).getPrice();
         BigDecimal oneSellPrice = depthResponse.getTick().getAsks().get(0).getPrice();
 
         //3.开多。如果已有空单, 则平掉空单
         LOGGER.info(kLineContext.getBuyStatus());
         if (!hasBuy && kLineContext.isBuy()) {
-            //如果有空单, 表示反向开多, 先平掉空单
-            if (hasSell) {
-                LOGGER.info("当前持有卖单, 达到开多条件...");
-                closeSell();
-            } else {
-                //平掉多单之后, 发生追高的情况
-                /**
-                 * a. 上次出入场是同一根k线，并且还处于上次离场k线, 那再次入场必须突破当前k线最高价.
-                 * b. 上次出入场不是同一根k线, 并且还处于上次离场k线, 那再次入场必须突破当前k线最高价.
-                 */
-                if ((lastCloseBuyInOpenKline && kLineContext.ifCurrentInLastOpenId()) || kLineContext.ifCurrentInLastCloseId()) {
-                    if (oneSellPrice.compareTo(kLineContext.getMaxHigh()) <= 0) {
-                        LOGGER.info("再次准备入场, 但卖1价未突破最高价.maxHigh:{}, 卖1价:{}", kLineContext.getMaxHigh(), oneSellPrice);
-                        return;
+            //睡2s, 防止突然暴涨和回跌
+            DateUtil.sleep(2000);
+            if (!hasBuy && kLineContext.isBuy()) {
+                //如果有空单, 表示反向开多, 先平掉空单
+                if (hasSell) {
+                    LOGGER.info("当前持有卖单, 达到开多条件...");
+                    closeSell();
+                } else {
+                    //平掉多单之后, 发生追高的情况
+                    /**
+                     * a. 上次出入场是同一根k线，并且还处于上次离场k线, 那再次入场必须突破当前k线最高价.
+                     * b. 上次出入场不是同一根k线, 并且还处于上次离场k线, 那再次入场必须突破当前k线最高价.
+                     */
+                    if ((lastCloseBuyInOpenKline && kLineContext.ifCurrentInLastOpenId()) || kLineContext.ifCurrentInLastCloseId()) {
+                        if (oneSellPrice.compareTo(kLineContext.getMaxHigh()) <= 0) {
+                            LOGGER.info("再次准备入场, 但卖1价未突破最高价.maxHigh:{}, 卖1价:{}", kLineContext.getMaxHigh(), oneSellPrice);
+                            return;
+                        }
+                        mailService.send(null, "【" + symbol.getName() + "】准备追高", "追高...");
+                        LOGGER.info("再次突破最高价, 追高...");
+                        continues = true;
                     }
-                    mailService.send(null, "【" + symbol.getName() + "】准备追高", "追高...");
-                    LOGGER.info("再次突破最高价, 追高...");
-                    continues = true;
                 }
-            }
 
-            buy();
-            return;
+                buy();
+                return;
+            }
         }
 
         //4.开空。如果已有多单, 则平掉多单
         LOGGER.info(kLineContext.getSellStatus());
         if (!hasSell && kLineContext.isSell()) {
-            //如果有多单, 表示反向开空, 先平掉多单
-            if (hasBuy) {
-                LOGGER.info("当前持有买单, 达到开空条件...");
-                closeBuy();
-            } else {
-                //平掉空单之后, 发生追低的情况
-                /**
-                 * a. 上次出入场是同一根k线，并且还处于上次离场k线, 那再次入场必须突破当前k线最低价.
-                 * b. 上次出入场不是同一根k线, 并且还处于上次离场k线, 那再次入场必须突破当前k线最低价.
-                 */
-                if ((lastCloseSellInOpenKline && kLineContext.ifCurrentInLastOpenId()) || kLineContext.ifCurrentInLastCloseId()) {
-                    if (oneBuyPrice.compareTo(kLineContext.getMinLow()) >= 0) {
-                        LOGGER.info("再次准备入场, 但买1价未突破最低价.minLow:{}, 买1价:{}", kLineContext.getMinLow(), oneBuyPrice);
-                        return;
-                    }
-                    mailService.send(null, "【" + symbol.getName() + "】准备追低", "追低...");
-                    LOGGER.info("再次突破最低价, 追低...");
-                    continues = true;
-                }
-            }
+            //睡2s, 防止突然暴跌后上涨
+            DateUtil.sleep(2000);
+            if (!hasSell && kLineContext.isSell()) {
 
-            sell();
+                //如果有多单, 表示反向开空, 先平掉多单
+                if (hasBuy) {
+                    LOGGER.info("当前持有买单, 达到开空条件...");
+                    closeBuy();
+                } else {
+                    //平掉空单之后, 发生追低的情况
+                    /**
+                     * a. 上次出入场是同一根k线，并且还处于上次离场k线, 那再次入场必须突破当前k线最低价.
+                     * b. 上次出入场不是同一根k线, 并且还处于上次离场k线, 那再次入场必须突破当前k线最低价.
+                     */
+                    if ((lastCloseSellInOpenKline && kLineContext.ifCurrentInLastOpenId()) || kLineContext.ifCurrentInLastCloseId()) {
+                        if (oneBuyPrice.compareTo(kLineContext.getMinLow()) >= 0) {
+                            LOGGER.info("再次准备入场, 但买1价未突破最低价.minLow:{}, 买1价:{}", kLineContext.getMinLow(), oneBuyPrice);
+                            return;
+                        }
+                        mailService.send(null, "【" + symbol.getName() + "】准备追低", "追低...");
+                        LOGGER.info("再次突破最低价, 追低...");
+                        continues = true;
+                    }
+                }
+
+                sell();
+            }
         }
 
     }
@@ -276,6 +285,7 @@ public class SingleKLineStrategy extends AbstractStategy {
         if (positionVol.equals(0)) {
             return;
         }
+
         LOGGER.info("可开张数:{}, 实开张数:{}", availableVol, positionVol);
         //以对手价卖出
         OrderResponse response = huobiFutureService.place(symbol, DirectionEnum.SELL, OffsetEnum.OPEN, null, PriceTypeEnum.OPPONENT, leverRate, positionVol);
