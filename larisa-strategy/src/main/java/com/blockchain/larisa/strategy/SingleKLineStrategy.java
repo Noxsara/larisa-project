@@ -679,4 +679,8 @@ public class SingleKLineStrategy extends AbstractStategy {
         LOGGER.info("清仓完毕.");
     }
 
+    @Override
+    protected void increasePosition() {
+
+    }
 }

@@ -125,4 +125,9 @@ public abstract class AbstractStategy implements Strategy {
      */
     protected abstract void doClear();
 
+    /**
+     * 加仓
+     */
+    protected abstract void increasePosition();
+
 }

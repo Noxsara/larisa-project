@@ -181,4 +181,9 @@ public class GridStrategy extends AbstractStategy {
     public String name() {
         return tradePair.getPairName().toUpperCase();
     }
+
+    @Override
+    protected void increasePosition() {
+
+    }
 }
