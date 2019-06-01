@@ -5,9 +5,9 @@ public interface Constants {
     //最多保存300根K线
     Integer MAX_KLINE_HISTORY = 300;
 
-    Integer LAST_FIFTY_KLINE = 50;
+    Integer LAST_FIFTY_KLINE = 30;
 
-    Integer LAST_THIRTY_KLINE = 30;
+    Integer LAST_THIRTY_KLINE = 20;
 
     String OPEN_BUY_TITLE = "买入开多";
 
